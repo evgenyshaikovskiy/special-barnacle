@@ -173,12 +173,26 @@ document.getElementById('distance').addEventListener('click', () => {
     const node2 = nodes.find(v => v.id === Number(promptTarget));
 
     if (node1 && node2) {
-        alert(node1 !== node2 ? distance(node1, node2) : 0);
+        msg = 'Длина пути: ';
+        msg += node1 !== node2 ? distance(node1, node2) : 0;
+        alert(msg);
     }
     else {
         alert('Неверные данные!');
     }
 });
+
+document.getElementById('paths').addEventListener('click', () => {
+    promptSource = prompt('Введите ID первой вершины:');
+    promptTarget = prompt('Введите ID последней вершины:');
+    const node1 = nodes.find(v => v.id === Number(promptSource));
+    const node2 = nodes.find(v => v.id === Number(promptTarget));
+
+    let result = findPaths(node1, node2);
+    let toAlert = 'Пути между выбранными вершинами:\n' + result.map(path => path.map(node => node.id).join('-')).join('\n');
+    toAlert += '\nКратчайший из них:\n' + result.sort((a, b) => a.length - b.length)[0].map(elem => elem.id).join('-');
+    alert(toAlert);
+})
 
 document.getElementById('cycles').addEventListener('click', () => {
     let result = cycles();
@@ -534,7 +548,7 @@ function findInformationOnGraph() {
         nodes.forEach(target => {
             if (source != target) {
                 paths = findPaths(source, target);
-                max = paths.length === 0 ? -1 : paths.reduce((r, path) => path.length < r ? path.length : r, paths[0].length) - 1;
+                max = paths.length === 0 ? -1 : paths.reduce((r, path) => path.length > r ? path.length : r, paths[0].length) - 1;
                 if (max > maxForSource) {
                     maxForSource = max;
                     targetForMax = target;
@@ -546,6 +560,8 @@ function findInformationOnGraph() {
         data.push({source: source, target: targetForMax, max: maxForSource });
         // console.log({source: source, target: targetForMax, max: maxForSource });
     })
+
+    console.log(data);
 
     data.forEach(obj => {
         if (maxLen < obj.max) {
