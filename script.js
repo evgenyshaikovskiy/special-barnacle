@@ -561,11 +561,12 @@ function findInformationOnGraph() {
         // console.log({source: source, target: targetForMax, max: maxForSource });
     })
 
-    console.log(data);
+    console.log(data)
 
+    // eccentricities for all vertices
     data.forEach(obj => {
         if (maxLen < obj.max) {
-            maxLen = max;
+            maxLen = obj.max;
         }
 
         if (minLen > obj.max) {
